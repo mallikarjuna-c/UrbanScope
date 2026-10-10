@@ -1,0 +1,25 @@
+.google-maps-3d-container {
+  width: 100%;
+  height: 500px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  margin: 20px 0;
+}
+
+.google-maps-3d {
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 768px) {
+  .google-maps-3d-container {
+    height: 400px;
+  }
+}
+
+@media (max-width: 480px) {
+  .google-maps-3d-container {
+    height: 300px;
+  }
+}

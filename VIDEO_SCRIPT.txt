@@ -1,0 +1,1501 @@
+═══════════════════════════════════════════════════════════════════════════════
+                    URBANSCOPE - COMPLETE VIDEO EXPLANATION SCRIPT
+                         Component-by-Component Walkthrough
+═══════════════════════════════════════════════════════════════════════════════
+
+═══════════════════════════════════════════════════════════════════════════════
+PAGE 1: HOME PAGE
+═══════════════════════════════════════════════════════════════════════════════
+
+[COMPONENT 1: HERO SECTION]
+-----------------------------------
+WHAT YOU SEE:
+- Dynamic Earth background video
+- Title: "UrbanScope"
+- Tagline: "Your gateway to understanding urban health through NASA Earth observations"
+
+HOW IT WORKS:
+- Background video loops continuously showing Earth from space
+- Creates immersive experience connecting users to satellite data
+- Sets the tone: We're using real NASA Earth observation data
+
+CALCULATION/LOGIC:
+- Video file: earth-bg.mp4 from public folder
+- CSS backdrop-filter creates the overlay effect
+- Text positioned with flexbox centering
+
+
+[COMPONENT 2: THREE MAIN MODULES]
+-----------------------------------
+WHAT YOU SEE:
+Three cards displayed:
+1. "Urban Heat Risk Index" - Red/Orange theme
+2. "Green Space Analysis" - Green theme  
+3. "Healthcare Access" - Blue theme
+
+HOW IT WORKS:
+- Each card is a navigation link to analysis page
+- Hover effect: Card lifts up and glows
+- Click: Routes to respective analysis page
+
+CALCULATION/LOGIC:
+- React Router handles navigation
+- CSS transform: translateY(-10px) on hover
+- Box-shadow increases for glow effect
+
+
+[COMPONENT 3: NASA APOD (Astronomy Picture of the Day)]
+-----------------------------------
+WHAT YOU SEE:
+- Daily astronomy image from NASA
+- Title and description
+- Date stamp
+
+HOW IT WORKS:
+- Fetches from NASA APOD API on page load
+- API URL: https://api.nasa.gov/planetary/apod
+- Updates daily automatically
+
+CALCULATION/LOGIC:
+```javascript
+fetch(`https://api.nasa.gov/planetary/apod?api_key=${NASA_KEY}`)
+  .then(response => response.json())
+  .then(data => display(data.url, data.title, data.explanation))
+```
+- If API fails, shows placeholder image
+- Caches result for 24 hours
+
+
+═══════════════════════════════════════════════════════════════════════════════
+PAGE 2: HEAT RISK ANALYSIS
+═══════════════════════════════════════════════════════════════════════════════
+
+[COMPONENT 1: PAGE HEADER]
+-----------------------------------
+WHAT YOU SEE:
+- Title: "Urban Heat Risk Index"
+- Subtitle: "Advanced AI-powered analysis using NASA satellite data"
+
+HOW IT WORKS:
+- Static header with gradient background
+- Sets context for what analysis does
+
+
+[COMPONENT 2: CITY SEARCH BAR]
+-----------------------------------
+WHAT YOU SEE:
+- Search input with magnifying glass icon
+- Dropdown suggestions as you type
+- Selected city displays with coordinates
+
+HOW IT WORKS:
+- Uses OpenStreetMap Nominatim API for city search
+- Real-time search: Types "Del" → Shows "Delhi, India"
+- Autocomplete with debouncing (300ms delay)
+
+CALCULATION/LOGIC:
+```javascript
+// Search API call
+fetch(`https://nominatim.openstreetmap.org/search?q=${query}&format=json`)
+  .then(results => {
+    cities = results.map(r => ({
+      name: r.display_name,
+      lat: parseFloat(r.lat),
+      lon: parseFloat(r.lon)
+    }))
+  })
+```
+- Extracts: City name, Latitude, Longitude
+- Stores selected city in state for analysis
+
+
+[COMPONENT 3: DATE SELECTOR]
+-----------------------------------
+WHAT YOU SEE:
+- Calendar input showing current date
+- Can select past dates
+
+HOW IT WORKS:
+- HTML5 date input
+- Max date = today (can't select future)
+- Default = current date
+
+CALCULATION/LOGIC:
+```javascript
+const today = new Date().toISOString().slice(0, 10); // "2024-01-15"
+<input type="date" max={today} value={selectedDate} />
+```
+
+
+[COMPONENT 4: ANALYZE BUTTON]
+-----------------------------------
+WHAT YOU SEE:
+- Blue button "Analyze Heat Risk"
+- Changes to "Analyzing..." when clicked
+- Disabled if no city selected
+
+HOW IT WORKS:
+- Triggers API call to backend
+- Shows loading state during analysis
+- Enables when city is selected
+
+CALCULATION/LOGIC:
+```javascript
+const handleAnalyze = async () => {
+  setLoading(true);
+  const response = await fetch(`${API_URL}/heat-risk`, {
+    method: 'POST',
+    body: JSON.stringify({
+      city: selectedCity.name,
+      coordinates: [selectedCity.lat, selectedCity.lon],
+      date: selectedDate
+    })
+  });
+  const data = await response.json();
+  setResults(data);
+  setLoading(false);
+}
+```
+
+
+[COMPONENT 5: TEMPERATURE CARD]
+-----------------------------------
+WHAT YOU SEE:
+- Large number: "35.2°C"
+- Label: "Land Surface Temp"
+- Color: Red/Orange gradient border
+
+HOW IT WORKS:
+- Shows average temperature from NASA POWER API
+- Updates based on selected city and date
+
+CALCULATION/LOGIC:
+Backend fetches from NASA POWER API:
+```python
+# NASA POWER API call
+params = {
+    'parameters': 'T2M',  # Temperature at 2 meters
+    'latitude': lat,
+    'longitude': lon,
+    'start': date,
+    'end': date
+}
+response = requests.get(NASA_POWER_API, params=params)
+temperature = response.json()['properties']['parameter']['T2M'][date]
+```
+
+FORMULA:
+- T2M = Temperature at 2 meters above ground (Celsius)
+- Averages last 7 days of data
+- Filters out invalid values (-999)
+- Returns: Rounded to 1 decimal place
+
+EXAMPLE:
+- Delhi coordinates: (28.7, 77.1)
+- Date: 2024-01-15
+- NASA returns: 18.3°C (winter temperature)
+
+
+[COMPONENT 6: HEAT INDEX CARD]
+-----------------------------------
+WHAT YOU SEE:
+- Number: "-356°C" (with UHI effect)
+- Label: "Feels Like (with UHI)"
+- Explanation: Urban Heat Island effect added
+
+HOW IT WORKS:
+- Takes base temperature
+- Adds Urban Heat Island (UHI) effect
+- Shows "feels like" temperature
+
+CALCULATION/LOGIC:
+```python
+# Calculate UHI effect
+pop_factor = min(population_density / 5000, 5)  # Max 5°C from density
+tree_factor = min(tree_coverage / 20, 3)  # Max 3°C cooling from trees
+
+uhi_effect = pop_factor - tree_factor
+uhi_effect = max(0.5, min(uhi_effect, 6))  # Clamp 0.5-6°C
+
+heat_index = base_temperature + uhi_effect
+```
+
+FORMULA BREAKDOWN:
+1. **Population Factor**: Higher density = more heat
+   - Delhi: 11,320 people/km² → 11,320/5000 = 2.26°C
+   
+2. **Tree Factor**: More trees = cooling effect
+   - Delhi: 20% tree cover → 20/20 = 1.0°C cooling
+   
+3. **UHI Effect**: 2.26 - 1.0 = 1.26°C
+   
+4. **Final**: 18.3°C + 1.26°C = 19.56°C feels like
+
+EXAMPLE:
+- Base Temp: 35°C
+- High density city (15,000/km²): +3°C
+- Low tree cover (10%): -0.5°C
+- UHI Effect: 3 - 0.5 = 2.5°C
+- **Feels Like: 37.5°C**
+
+
+[COMPONENT 7: RISK INDEX CARD]
+-----------------------------------
+WHAT YOU SEE:
+- Score: "7/10"
+- Label: "Risk Index"
+- Color: Red for high, Yellow for medium, Green for low
+
+HOW IT WORKS:
+- Combines temperature, population, tree cover
+- Weighted formula produces 0-10 score
+- Higher = more dangerous
+
+CALCULATION/LOGIC:
+```python
+def calculate_heat_risk_score(temp, pop_density, tree_cover):
+    # Normalize to 0-1 scale
+    temp_norm = min(temp / 50, 1.0)  # 50°C = max
+    pop_norm = min(pop_density / 20000, 1.0)  # 20k/km² = max
+    tree_norm = tree_cover / 100  # Already percentage
+    
+    # Weighted formula
+    risk = (0.5 × temp_norm) + (0.3 × pop_norm) - (0.2 × tree_norm)
+    
+    # Scale to 0-10
+    risk_index = risk × 10
+    return round(risk_index, 2)
+```
+
+EXAMPLE CALCULATION:
+Delhi in Summer:
+- Temperature: 42°C → 42/50 = 0.84
+- Population: 11,320/km² → 11,320/20,000 = 0.57
+- Tree Cover: 20% → 20/100 = 0.20
+
+Risk = (0.5 × 0.84) + (0.3 × 0.57) - (0.2 × 0.20)
+     = 0.42 + 0.171 - 0.04
+     = 0.551
+
+Risk Index = 0.551 × 10 = **5.51/10** (Moderate-High Risk)
+
+INTERPRETATION:
+- 0-3: Low Risk (Green) ✅
+- 3-5: Moderate Risk (Yellow) ⚠️
+- 5-7: High Risk (Orange) 🔶
+- 7-10: Critical Risk (Red) 🔴
+
+
+[COMPONENT 8: AFFECTED POPULATION CARD]
+-----------------------------------
+WHAT YOU SEE:
+- Number: "450K"
+- Label: "Vulnerable Groups"
+- Icon: People symbol
+
+HOW IT WORKS:
+- Estimates vulnerable population
+- Based on total population and risk factors
+
+CALCULATION/LOGIC:
+```python
+vulnerable_percentage = 0.30  # 30% baseline
+
+# Adjust based on risk
+if risk_index >= 7:
+    vulnerable_percentage = 0.45  # 45% in critical zones
+elif risk_index >= 5:
+    vulnerable_percentage = 0.35  # 35% in high risk
+    
+vulnerable_population = total_population × vulnerable_percentage
+```
+
+EXAMPLE:
+- Delhi population: 1,500,000
+- Risk Index: 7.2 (Critical)
+- Vulnerable %: 45%
+- **Affected: 675,000 people**
+
+WHO IS VULNERABLE:
+- Elderly (65+)
+- Children under 5
+- Outdoor workers
+- Low-income communities
+- People with chronic conditions
+
+
+[COMPONENT 9: TEMPERATURE TRENDS CHART]
+-----------------------------------
+WHAT YOU SEE:
+- Line graph showing temperature over time
+- X-axis: Months
+- Y-axis: Temperature (°C)
+
+HOW IT WORKS:
+- Fetches historical temperature data
+- Plots monthly averages
+- Shows seasonal patterns
+
+CALCULATION/LOGIC:
+```python
+# Get last 12 months of data
+for month in range(12):
+    date = today - timedelta(days=30*month)
+    temp_data = fetch_temperature(lat, lon, date)
+    monthly_temps.append({
+        'month': date.strftime('%b'),
+        'temp': temp_data['temperature']
+    })
+```
+
+EXAMPLE DATA:
+```
+Jan: 18°C
+Feb: 22°C
+Mar: 28°C
+Apr: 35°C
+May: 40°C (Peak summer)
+Jun: 38°C
+Jul: 32°C (Monsoon cooling)
+Aug: 30°C
+Sep: 32°C
+Oct: 28°C
+Nov: 22°C
+Dec: 18°C
+```
+
+
+[COMPONENT 10: 3D SATELLITE MAP]
+-----------------------------------
+WHAT YOU SEE:
+- Interactive 3D map of selected city
+- Satellite imagery
+- Tilt and rotation controls
+- Street View pegman icon
+
+HOW IT WORKS:
+- Google Maps JavaScript API
+- Loads satellite tiles
+- 3D building models
+- Street View integration
+
+CALCULATION/LOGIC:
+```javascript
+const map = new google.maps.Map(mapElement, {
+  center: { lat: cityLat, lng: cityLon },
+  zoom: 16,
+  mapTypeId: 'satellite',
+  tilt: 45,  // 3D angle
+  heading: 0,  // North orientation
+  streetViewControl: true
+});
+```
+
+CONTROLS:
+- **Rotate**: Ctrl + Drag
+- **Tilt**: Shift + Drag
+- **Zoom**: Scroll wheel
+- **Street View**: Drag pegman to street
+
+
+[COMPONENT 11: COOLING POTENTIAL CALCULATOR]
+-----------------------------------
+WHAT YOU SEE:
+- "Potential Temperature Reduction: -3.5°C"
+- "Timeframe: 3-5 years"
+- Shows impact of adding trees
+
+HOW IT WORKS:
+- Calculates cooling from increasing tree coverage
+- Based on research: 10% more trees = 1-2°C cooling
+
+CALCULATION/LOGIC:
+```python
+def calculate_cooling_potential(current_tree_cover):
+    target_tree_cover = 30  # WHO recommendation
+    tree_gap = max(0, target_tree_cover - current_tree_cover)
+    
+    # Research: 10% tree increase = 1.5°C average cooling
+    potential_cooling = (tree_gap / 10) × 1.5
+    
+    # Timeframe based on planting rate
+    trees_needed = tree_gap × 1000  # per % coverage
+    planting_rate = 10000  # trees per year
+    years = trees_needed / planting_rate
+    
+    return {
+        'cooling': round(potential_cooling, 1),
+        'timeframe': f"{int(years)}-{int(years)+2} years"
+    }
+```
+
+EXAMPLE:
+- Current: 15% tree cover
+- Target: 30% (WHO standard)
+- Gap: 15%
+
+Cooling = (15 / 10) × 1.5 = **2.25°C reduction**
+Trees needed = 15 × 1,000 = 15,000 trees
+Years = 15,000 / 10,000 = 1.5 years
+**Timeframe: 2-3 years**
+
+
+[COMPONENT 12: RECOMMENDATIONS LIST]
+-----------------------------------
+WHAT YOU SEE:
+Numbered list like:
+1. "Establish emergency cooling centers in public buildings"
+2. "Issue heat health warnings to vulnerable populations"
+3. "Urgent: Increase tree canopy by 15-20% in next 2 years"
+
+HOW IT WORKS:
+- AI generates based on risk level
+- Prioritized by urgency
+- Evidence-based interventions
+
+CALCULATION/LOGIC:
+```python
+def generate_recommendations(risk_index, tree_cover, uhi_effect):
+    recommendations = []
+    
+    if risk_index >= 7:  # Critical
+        recommendations.extend([
+            "Establish emergency cooling centers",
+            "Issue heat warnings to vulnerable populations",
+            f"Urgent: Increase tree canopy by {30-tree_cover}%",
+            "Install cool/reflective roofing on 30% of buildings",
+            "Create water misting stations"
+        ])
+    elif risk_index >= 5:  # High
+        recommendations.extend([
+            "Add green infrastructure: 5,000 new trees annually",
+            "Create urban parks and green corridors",
+            "Implement cool pavement technology",
+            "Improve ventilation corridors"
+        ])
+    else:  # Low-Moderate
+        recommendations.extend([
+            "Maintain current green space levels",
+            "Continue monitoring heat patterns",
+            "Gradual tree planting (1,000 trees/year)"
+        ])
+    
+    return recommendations
+```
+
+
+═══════════════════════════════════════════════════════════════════════════════
+PAGE 3: GREEN SPACE ANALYSIS
+═══════════════════════════════════════════════════════════════════════════════
+
+[COMPONENT 1: THREE PERSPECTIVES SECTION]
+-----------------------------------
+WHAT YOU SEE:
+Three cards explaining methodology:
+1. "Availability" - How much green space exists
+2. "Accessibility" - How close are people to parks
+3. "Visibility" - How visible is the greenery
+
+HOW IT WORKS:
+- Based on GreenEx_Py research methodology
+- Three-dimensional analysis framework
+- Each perspective measured independently
+
+CALCULATION/LOGIC:
+This is the theoretical framework - actual calculations below
+
+
+[COMPONENT 2: COVERAGE PERCENTAGE CARD]
+-----------------------------------
+WHAT YOU SEE:
+- "18.5%" in large text
+- "Green Space Coverage"
+- Color: Green if good, Red if poor
+
+HOW IT WORKS:
+- Percentage of city area that is vegetated
+- Calculated from NDVI satellite data
+
+CALCULATION/LOGIC:
+```python
+def calculate_coverage(ndvi_value, city_area_km2):
+    # NDVI from NASA MODIS satellite
+    # Range: -1 to 1
+    # > 0.4 = vegetation
+    
+    # Count pixels with NDVI > 0.4
+    vegetation_pixels = count_pixels_where(ndvi > 0.4)
+    total_pixels = city_area_pixels
+    
+    coverage_percentage = (vegetation_pixels / total_pixels) × 100
+    return round(coverage_percentage, 1)
+```
+
+EXAMPLE:
+- City: 100 km²
+- Satellite image: 1,000,000 pixels
+- Vegetation pixels (NDVI > 0.4): 185,000
+- **Coverage: 18.5%**
+
+NDVI INTERPRETATION:
+- -1 to 0: Water, snow, bare soil
+- 0 to 0.2: Urban areas, sparse vegetation
+- 0.2 to 0.4: Grassland, shrubs
+- 0.4 to 0.6: Moderate vegetation
+- 0.6 to 1.0: Dense forests
+
+WHO STANDARD: 30% minimum coverage
+
+
+[COMPONENT 3: NDVI SCORE CARD]
+-----------------------------------
+WHAT YOU SEE:
+- "0.35" score
+- "Moderate Vegetation"
+- Color gradient from red to green
+
+HOW IT WORKS:
+- NDVI = Normalized Difference Vegetation Index
+- Measures vegetation health from satellite
+- Uses near-infrared and red light reflection
+
+CALCULATION/LOGIC:
+```python
+# NASA MODIS satellite formula
+NDVI = (NIR - Red) / (NIR + Red)
+
+# Where:
+# NIR = Near-Infrared reflectance (vegetation reflects strongly)
+# Red = Red light reflectance (vegetation absorbs)
+```
+
+EXAMPLE:
+Healthy vegetation:
+- NIR reflectance: 0.50 (50%)
+- Red reflectance: 0.10 (10%)
+- NDVI = (0.50 - 0.10) / (0.50 + 0.10)
+- NDVI = 0.40 / 0.60 = **0.67** (Dense vegetation)
+
+Urban area:
+- NIR: 0.25
+- Red: 0.20
+- NDVI = (0.25 - 0.20) / (0.25 + 0.20)
+- NDVI = 0.05 / 0.45 = **0.11** (Sparse/Urban)
+
+
+[COMPONENT 4: ACCESSIBILITY SCORE]
+-----------------------------------
+WHAT YOU SEE:
+- "Good" or "Poor" rating
+- Distance to nearest park: "450m"
+- Color: Green if < 300m, Red if > 500m
+
+HOW IT WORKS:
+- Measures walking distance to nearest green space
+- WHO recommends < 300m (5-minute walk)
+
+CALCULATION/LOGIC:
+```python
+def calculate_accessibility(user_location, parks_list):
+    min_distance = float('inf')
+    
+    for park in parks_list:
+        # Haversine formula for distance
+        distance = calculate_distance(
+            user_location.lat, user_location.lon,
+            park.lat, park.lon
+        )
+        min_distance = min(min_distance, distance)
+    
+    # Score based on distance
+    if min_distance <= 300:
+        return {'score': 100, 'level': 'Excellent'}
+    elif min_distance <= 500:
+        return {'score': 75, 'level': 'Good'}
+    elif min_distance <= 800:
+        return {'score': 50, 'level': 'Moderate'}
+    else:
+        return {'score': 25, 'level': 'Poor'}
+```
+
+HAVERSINE FORMULA:
+```python
+def calculate_distance(lat1, lon1, lat2, lon2):
+    R = 6371000  # Earth radius in meters
+    
+    φ1 = lat1 × π/180
+    φ2 = lat2 × π/180
+    Δφ = (lat2-lat1) × π/180
+    Δλ = (lon2-lon1) × π/180
+    
+    a = sin²(Δφ/2) + cos(φ1) × cos(φ2) × sin²(Δλ/2)
+    c = 2 × atan2(√a, √(1−a))
+    
+    distance = R × c  # in meters
+    return distance
+```
+
+EXAMPLE:
+User at (28.6139, 77.2090)
+Nearest park at (28.6180, 77.2120)
+Distance ≈ **450 meters** → "Good" accessibility
+
+
+[COMPONENT 5: GAP ANALYSIS VISUAL]
+-----------------------------------
+WHAT YOU SEE:
+- Progress bar showing current vs target
+- Green fill: Current coverage (18.5%)
+- Gray area: Gap to target (11.5%)
+- Labels: "Current" and "Target: 30%"
+
+HOW IT WORKS:
+- Visual representation of coverage gap
+- Shows how far from WHO standard
+
+CALCULATION/LOGIC:
+```python
+current_coverage = 18.5  # %
+target_coverage = 30  # WHO standard
+gap = target_coverage - current_coverage  # 11.5%
+
+# Visual bar width
+bar_fill_width = (current_coverage / target_coverage) × 100
+# = (18.5 / 30) × 100 = 61.7% of bar filled
+```
+
+INTERPRETATION:
+- **Current: 18.5%** - What the city has now
+- **Target: 30%** - WHO/UN-Habitat recommendation
+- **Gap: 11.5%** - Additional green space needed
+- **Priority: High** - Below 20% is concerning
+
+TO CLOSE GAP:
+- Need to add 11.5% more green space
+- In 100 km² city = 11.5 km² of new parks
+- Approximately 10-15 new parks needed
+
+
+[COMPONENT 6: PER CAPITA GREEN SPACE]
+-----------------------------------
+WHAT YOU SEE:
+Three metrics:
+- "Green Space Per Capita: 11.1 m²/person"
+- "WHO Recommendation: 9 m²/person"
+- "Status: Meets Standard ✓"
+
+HOW IT WORKS:
+- Divides total green area by population
+- Compares to WHO minimum standard
+
+CALCULATION/LOGIC:
+```python
+def calculate_per_capita(total_green_area_km2, population):
+    # Convert km² to m²
+    total_green_area_m2 = total_green_area_km2 × 1,000,000
+    
+    # Divide by population
+    per_capita = total_green_area_m2 / population
+    
+    return round(per_capita, 1)
+```
+
+EXAMPLE:
+- Total green area: 16.6 km²
+- Population: 1,500,000
+- Calculation:
+  - 16.6 km² = 16,600,000 m²
+  - 16,600,000 / 1,500,000 = **11.1 m²/person**
+
+COMPARISON:
+- WHO minimum: 9 m²/person
+- Current: 11.1 m²/person
+- **Status: EXCEEDS standard** ✅
+
+BUT WAIT:
+- Coverage is only 18.5% (below 30%)
+- Per capita is 11.1 m² (above 9 m²)
+- **Both can be true!** Coverage = % of land, Per capita = m² per person
+
+
+[COMPONENT 7: PARKS COUNT & DISTRIBUTION]
+-----------------------------------
+WHAT YOU SEE:
+- "Total Parks: 45"
+- "Average Size: 0.37 km²"
+- "Street Trees: 2,800"
+
+HOW IT WORKS:
+- Counts distinct park polygons from OpenStreetMap
+- Calculates average park size
+- Estimates street tree count
+
+CALCULATION/LOGIC:
+```python
+# From OpenStreetMap data
+parks = query_osm(city_bounds, tag='leisure=park')
+parks_count = len(parks)
+
+total_park_area = sum([park.area for park in parks])
+avg_park_size = total_park_area / parks_count
+
+# Street trees estimation
+street_length_km = calculate_street_network_length(city)
+trees_per_km = 50  # Average urban density
+street_trees = street_length_km × trees_per_km
+```
+
+EXAMPLE:
+- 45 parks identified
+- Total park area: 16.6 km²
+- Average: 16.6 / 45 = **0.37 km² per park**
+- Street network: 560 km
+- Trees: 560 × 50 = **28,000 street trees**
+
+
+[COMPONENT 8: VISIBILITY INDEX]
+-----------------------------------
+WHAT YOU SEE:
+- "Visibility: 32%"
+- Progress bar
+- Explanation: "Extent of visible greenspaces"
+
+HOW IT WORKS:
+- Measures how much greenery is visible from streets
+- Based on viewshed analysis
+
+CALCULATION/LOGIC:
+```python
+def calculate_visibility(street_network, green_spaces):
+    total_street_points = 0
+    visible_green_points = 0
+    
+    # Sample points along streets
+    for street in street_network:
+        points = sample_points_every_50m(street)
+        
+        for point in points:
+            total_street_points += 1
+            
+            # Check if green space visible within 100m
+            nearby_green = find_green_within_radius(point, 100m)
+            
+            if nearby_green:
+                visible_green_points += 1
+    
+    visibility_index = (visible_green_points / total_street_points) × 100
+    return round(visibility_index, 0)
+```
+
+EXAMPLE:
+- 10,000 street sample points
+- 3,200 points can see greenery
+- Visibility = (3,200 / 10,000) × 100 = **32%**
+
+INTERPRETATION:
+- < 20%: Poor visibility
+- 20-40%: Moderate
+- 40-60%: Good
+- > 60%: Excellent
+
+
+[COMPONENT 9: RECOMMENDATIONS]
+-----------------------------------
+WHAT YOU SEE:
+Numbered list:
+1. "Increase green space by 11.5%"
+2. "Add 5-8 new parks (currently 45)"
+3. "Street tree planting program: 10,000 trees"
+4. "Develop linear parks along waterways"
+
+HOW IT WORKS:
+- Generated based on gap analysis
+- Prioritized by impact
+- Specific, actionable items
+
+CALCULATION/LOGIC:
+```python
+def generate_recommendations(coverage, gap, distance, parks_count):
+    recs = []
+    
+    if coverage < 15:  # Critical
+        recs.append(f"Critical: Add {gap:.1f}% green space urgently")
+        recs.append(f"Create 10-15 new parks (currently {parks_count})")
+        recs.append("Plant 50,000 trees over next 3 years")
+        
+    elif coverage < 25:  # Below target
+        recs.append(f"Increase green space by {gap:.1f}%")
+        new_parks = int(gap / 2)  # Rough estimate
+        recs.append(f"Add {new_parks}-{new_parks+3} new parks")
+        recs.append("Street tree planting: 10,000 trees")
+        
+    if distance > 500:  # Poor accessibility
+        recs.append(f"Poor accessibility: Nearest park {distance}m away")
+        recs.append("Create neighborhood parks within 5-min walk")
+    
+    return recs
+```
+
+
+═══════════════════════════════════════════════════════════════════════════════
+PAGE 4: HEALTHCARE ACCESS ANALYSIS
+═══════════════════════════════════════════════════════════════════════════════
+
+[COMPONENT 1: FACILITIES COUNT CARD]
+-----------------------------------
+WHAT YOU SEE:
+- "45 Facilities"
+- Breakdown: "28 Primary Care, 5 Hospitals, 12 Emergency"
+
+HOW IT WORKS:
+- Counts healthcare facilities from OpenStreetMap
+- Categorizes by type
+
+CALCULATION/LOGIC:
+```python
+# Query OpenStreetMap
+facilities = query_osm(city_bounds, tags=[
+    'amenity=hospital',
+    'amenity=clinic',
+    'amenity=doctors'
+])
+
+# Categorize
+hospitals = [f for f in facilities if f.beds > 50]
+primary_care = [f for f in facilities if f.type == 'clinic']
+emergency = [f for f in facilities if f.has_emergency]
+
+total = len(facilities)
+```
+
+
+[COMPONENT 2: 15-MINUTE ACCESS CARD]
+-----------------------------------
+WHAT YOU SEE:
+- "65% Population"
+- "With 15-min Access"
+- Color: Orange (below 75% threshold)
+
+HOW IT WORKS:
+- Calculates drive-time isochrones around facilities
+- Overlays with population density
+- Counts people within 15-min drive
+
+CALCULATION/LOGIC:
+```python
+def calculate_access_percentage(facilities, population_grid):
+    total_population = sum(population_grid.values())
+    population_with_access = 0
+    
+    for facility in facilities:
+        # Generate 15-minute drive-time polygon
+        isochrone = generate_isochrone(
+            facility.location,
+            time_minutes=15,
+            mode='driving'
+        )
+        
+        # Count population within polygon
+        for grid_cell in population_grid:
+            if grid_cell.intersects(isochrone):
+                population_with_access += grid_cell.population
+    
+    # Remove duplicates (people served by multiple facilities)
+    population_with_access = remove_duplicates(population_with_access)
+    
+    access_percentage = (population_with_access / total_population) × 100
+    return round(access_percentage, 0)
+```
+
+EXAMPLE:
+- Total population: 1,500,000
+- Population within 15-min: 975,000
+- Access %: (975,000 / 1,500,000) × 100 = **65%**
+
+INTERPRETATION:
+- < 60%: Critical (Red)
+- 60-75%: Needs Improvement (Orange)
+- 75-85%: Good (Yellow)
+- > 85%: Excellent (Green)
+
+
+[COMPONENT 3: RESOURCE METRICS - HOSPITAL BEDS]
+-----------------------------------
+WHAT YOU SEE:
+- "Current: 12.67 per 1,000"
+- "WHO Target: 3 per 1,000"
+- "Gap: 0 beds needed"
+
+HOW IT WORKS:
+- Counts total hospital beds in city
+- Divides by population (per 1,000 people)
+- Compares to WHO minimum standard
+
+CALCULATION/LOGIC:
+```python
+def calculate_beds_per_thousand(total_beds, population):
+    beds_per_1000 = (total_beds / population) × 1000
+    return round(beds_per_1000, 2)
+
+# Example
+total_beds = 19,000
+population = 1,500,000
+beds_per_1000 = (19,000 / 1,500,000) × 1000 = 12.67
+
+# Compare to WHO
+who_standard = 3.0
+gap = max(0, (who_standard × population / 1000) - total_beds)
+# gap = max(0, (3.0 × 1,500,000 / 1000) - 19,000)
+# gap = max(0, 4,500 - 19,000)
+# gap = max(0, -14,500)
+# gap = 0  (No gap - surplus exists!)
+```
+
+WHY GAP = 0:
+- WHO requires: 3 beds per 1,000 = 4,500 total beds
+- City has: 19,000 beds
+- **Surplus: 14,500 beds** (more than needed)
+- Gap = 0 means "no additional beds needed" ✅
+
+THIS IS GOOD NEWS! City exceeds WHO standard by 4x.
+
+
+[COMPONENT 4: RESOURCE METRICS - DOCTORS]
+-----------------------------------
+WHAT YOU SEE:
+- "Current: 5.42 per 1,000"
+- "WHO Target: 1 per 1,000"
+- "Gap: 0 doctors needed"
+
+HOW IT WORKS:
+- Same logic as beds
+- Counts licensed doctors in city
+- Per 1,000 population ratio
+
+CALCULATION/LOGIC:
+```python
+total_doctors = 8,130
+population = 1,500,000
+
+doctors_per_1000 = (8,130 / 1,500,000) × 1000 = 5.42
+
+# WHO standard
+who_standard = 1.0
+required_doctors = who_standard × population / 1000 = 1,500
+
+gap = max(0, 1,500 - 8,130) = 0
+```
+
+INTERPRETATION:
+- City has 5.42 doctors per 1,000 people
+- WHO requires only 1 per 1,000
+- **City has 5x more than WHO minimum** ✅
+- Gap = 0 (already exceeds standard)
+
+
+[COMPONENT 5: RESOURCE METRICS - FACILITIES PER 100K]
+-----------------------------------
+WHAT YOU SEE:
+- "Current: 6.5 per 100K"
+- "WHO Target: 10 per 100K"
+- "Gap: ~52 facilities needed"
+
+HOW IT WORKS:
+- Counts all healthcare facilities
+- Per 100,000 population ratio
+- WHO: 1 facility per 10,000 people = 10 per 100K
+
+CALCULATION/LOGIC:
+```python
+total_facilities = 98
+population = 1,500,000
+
+facilities_per_100k = (98 / 1,500,000) × 100,000 = 6.53
+
+# WHO standard
+who_standard = 10.0  # (1 per 10,000)
+required_facilities = population / 10,000 = 150
+
+gap = 150 - 98 = 52 facilities needed ❌
+```
+
+WHY THIS SHOWS A GAP:
+- Current: 6.5 per 100K (98 total facilities)
+- WHO Target: 10 per 100K (150 total facilities)
+- **Deficit: 52 facilities** (need more locations)
+
+KEY INSIGHT:
+- Beds & Doctors: SURPLUS (quality of care is good)
+- Facilities: DEFICIT (geographic access is poor)
+- **Problem: Resources concentrated in few locations**
+- **Solution: Build more facilities in underserved areas**
+
+
+[COMPONENT 6: UNDERSERVED AREAS MAP]
+-----------------------------------
+WHAT YOU SEE:
+- Map with red zones highlighted
+- Labels: "North District", "East Suburbs"
+- "35% of population in underserved zones"
+
+HOW IT WORKS:
+- Identifies areas beyond 15-min access
+- Highlights on map
+- Calculates affected population
+
+CALCULATION/LOGIC:
+```python
+def identify_underserved_areas(facilities, population_grid):
+    underserved_zones = []
+    
+    for grid_cell in population_grid:
+        # Check if cell is within 15-min of any facility
+        has_access = False
+        
+        for facility in facilities:
+            distance = calculate_drive_time(grid_cell, facility)
+            if distance <= 15:
+                has_access = True
+                break
+        
+        if not has_access:
+            underserved_zones.append({
+                'location': grid_cell.center,
+                'population': grid_cell.population,
+                'nearest_facility_time': min_drive_time
+            })
+    
+    return underserved_zones
+```
+
+
+[COMPONENT 7: RECOMMENDED FACILITY LOCATIONS]
+-----------------------------------
+WHAT YOU SEE:
+- Map markers showing suggested locations
+- "Priority 1: North District (serves 45K)"
+- "Priority 2: East Suburbs (serves 38K)"
+
+HOW IT WORKS:
+- Optimization algorithm finds best locations
+- Maximizes population coverage
+- Minimizes overlap with existing facilities
+
+CALCULATION/LOGIC:
+```python
+def optimize_facility_locations(underserved_areas, facilities_needed):
+    candidate_locations = []
+    
+    # For each underserved area
+    for area in underserved_areas:
+        # Calculate potential impact
+        coverage = calculate_potential_coverage(area, radius=5km)
+        
+        candidate_locations.append({
+            'location': area.center,
+            'population_served': coverage.population,
+            'priority': 'Critical' if coverage.population > 50000 else 'High'
+        })
+    
+    # Sort by population served (descending)
+    candidate_locations.sort(key=lambda x: x['population_served'], reverse=True)
+    
+    # Return top N locations
+    return candidate_locations[:facilities_needed]
+```
+
+EXAMPLE OUTPUT:
+1. **North District** (28.7°N, 77.1°E)
+   - Population served: 45,000
+   - Current nearest: 25 min away
+   - Priority: Critical
+
+2. **East Suburbs** (28.6°N, 77.3°E)
+   - Population served: 38,000
+   - Current nearest: 20 min away
+   - Priority: High
+
+
+[COMPONENT 8: WAIT TIME METRIC]
+-----------------------------------
+WHAT YOU SEE:
+- "Average Wait Time: 45 minutes"
+- "Target: < 30 minutes"
+- Color: Red (exceeds target)
+
+HOW IT WORKS:
+- Estimates based on facility capacity vs demand
+- Higher patient load = longer waits
+
+CALCULATION/LOGIC:
+```python
+def calculate_wait_time(facilities, population):
+    total_capacity = sum([f.beds × 3 for f in facilities])  # 3 patients per bed per day
+    daily_demand = population × 0.01  # 1% seek care daily
+    
+    utilization_rate = daily_demand / total_capacity
+    
+    # Wait time increases exponentially with utilization
+    if utilization_rate < 0.7:
+        wait_time = 15  # minutes
+    elif utilization_rate < 0.85:
+        wait_time = 30
+    elif utilization_rate < 0.95:
+        wait_time = 45
+    else:
+        wait_time = 60+
+    
+    return wait_time
+```
+
+EXAMPLE:
+- Capacity: 19,000 beds × 3 = 57,000 patients/day
+- Demand: 1,500,000 × 0.01 = 15,000 patients/day
+- Utilization: 15,000 / 57,000 = 26% (low)
+- **Wait time: ~15 minutes** (good)
+
+But if demand increases or facilities close:
+- Demand: 25,000 patients/day
+- Utilization: 25,000 / 57,000 = 44%
+- **Wait time: ~30 minutes**
+
+
+[COMPONENT 9: QUALITY SCORE]
+-----------------------------------
+WHAT YOU SEE:
+- "Quality Score: 72/100"
+- Breakdown: Access (65), Resources (85), Wait Time (60)
+
+HOW IT WORKS:
+- Composite score from multiple factors
+- Weighted average
+
+CALCULATION/LOGIC:
+```python
+def calculate_quality_score(access_pct, facilities_per_100k, 
+                           beds_per_1000, doctors_per_1000, wait_time):
+    # Normalize each metric to 0-100 scale
+    access_score = access_pct  # Already percentage
+    
+    facilities_score = min((facilities_per_100k / 10) × 100, 100)
+    beds_score = min((beds_per_1000 / 3) × 100, 100)
+    doctors_score = min((doctors_per_1000 / 1) × 100, 100)
+    
+    wait_score = max(0, 100 - (wait_time - 15) × 2)  # Penalty for > 15 min
+    
+    # Weighted average
+    quality = (
+        0.30 × access_score +      # 30% weight
+        0.20 × facilities_score +  # 20% weight
+        0.20 × beds_score +        # 20% weight
+        0.15 × doctors_score +     # 15% weight
+        0.15 × wait_score          # 15% weight
+    )
+    
+    return round(quality, 1)
+```
+
+EXAMPLE:
+- Access: 65%
+- Facilities: (6.5/10)×100 = 65
+- Beds: (12.67/3)×100 = 100 (capped)
+- Doctors: (5.42/1)×100 = 100 (capped)
+- Wait: 100-(45-15)×2 = 40
+
+Quality = 0.30×65 + 0.20×65 + 0.20×100 + 0.15×100 + 0.15×40
+        = 19.5 + 13 + 20 + 15 + 6
+        = **73.5/100**
+
+
+═══════════════════════════════════════════════════════════════════════════════
+PAGE 5: URBAN VR
+═══════════════════════════════════════════════════════════════════════════════
+
+[COMPONENT 1: VIDEO GALLERY GRID]
+-----------------------------------
+WHAT YOU SEE:
+- 9 video cards in grid layout
+- Each with thumbnail, title, category
+- Hover effect: Card lifts and glows
+
+HOW IT WORKS:
+- Videos stored in /public/3dvideos/
+- Auto-playing thumbnails on hover
+- Click to open full player
+
+CALCULATION/LOGIC:
+```javascript
+const videos = [
+  {
+    id: 1,
+    title: 'Urban Heat Island Visualization',
+    src: '/3dvideos/video1.mp4',
+    category: 'Heat Analysis'
+  },
+  // ... 9 total videos
+];
+
+// Render grid
+videos.map(video => (
+  <VideoCard
+    key={video.id}
+    video={video}
+    onClick={() => setSelectedVideo(video)}
+  />
+))
+```
+
+
+[COMPONENT 2: VIDEO PLAYER]
+-----------------------------------
+WHAT YOU SEE:
+- Large 360° video player
+- Play/Pause button
+- Fullscreen button
+- Video title and description below
+
+HOW IT WORKS:
+- HTML5 video element
+- 360° videos can be dragged to look around
+- VR headset compatible
+
+CALCULATION/LOGIC:
+```javascript
+<video
+  ref={videoRef}
+  src={selectedVideo.src}
+  loop
+  controls={false}  // Custom controls
+  onPlay={() => setIsPlaying(true)}
+  onPause={() => setIsPlaying(false)}
+/>
+
+// Custom controls
+<button onClick={togglePlay}>
+  {isPlaying ? '⏸️ Pause' : '▶️ Play'}
+</button>
+<button onClick={toggleFullscreen}>
+  ⛶ Fullscreen
+</button>
+```
+
+
+═══════════════════════════════════════════════════════════════════════════════
+PAGE 6: 3D MAPS
+═══════════════════════════════════════════════════════════════════════════════
+
+[COMPONENT 1: GLOBAL SEARCH BAR]
+-----------------------------------
+WHAT YOU SEE:
+- Search input: "Search for any city, landmark, or address..."
+- Search button
+- Real-time suggestions
+
+HOW IT WORKS:
+- Google Places Autocomplete API
+- Geocoding for coordinates
+
+CALCULATION/LOGIC:
+```javascript
+const geocoder = new google.maps.Geocoder();
+
+geocoder.geocode({ address: searchQuery }, (results, status) => {
+  if (status === 'OK') {
+    const location = results[0].geometry.location;
+    map.setCenter(location);
+    
+    setSelectedLocation({
+      lat: location.lat(),
+      lng: location.lng(),
+      name: results[0].formatted_address
+    });
+  }
+});
+```
+
+
+[COMPONENT 2: QUICK LOCATION BUTTONS]
+-----------------------------------
+WHAT YOU SEE:
+- 8 buttons: "New York", "London", "Tokyo", etc.
+- Click to instantly jump to city
+
+HOW IT WORKS:
+- Pre-defined coordinates for major cities
+- Instant navigation
+
+CALCULATION/LOGIC:
+```javascript
+const quickLocations = [
+  { name: 'New York', lat: 40.7128, lng: -74.0060 },
+  { name: 'London', lat: 51.5074, lng: -0.1278 },
+  // ... 8 total
+];
+
+<button onClick={() => {
+  map.setCenter({ lat: location.lat, lng: location.lng });
+  setSearchQuery(location.name);
+}}>
+  📍 {location.name}
+</button>
+```
+
+
+[COMPONENT 3: 3D MAP VIEWER]
+-----------------------------------
+WHAT YOU SEE:
+- Interactive 3D satellite map
+- 3D buildings
+- Tilt and rotation
+- Street View pegman
+
+HOW IT WORKS:
+- Google Maps JavaScript API
+- WebGL rendering for 3D
+- Real-time satellite tiles
+
+CALCULATION/LOGIC:
+```javascript
+const map = new google.maps.Map(mapElement, {
+  center: { lat, lng },
+  zoom: 17,
+  mapTypeId: 'satellite',
+  tilt: 45,  // 3D angle (0-90°)
+  heading: 0,  // Rotation (0-360°)
+  streetViewControl: true,
+  mapTypeControl: true
+});
+
+// Controls
+// Rotate: Ctrl + Drag → changes heading
+// Tilt: Shift + Drag → changes tilt angle
+// Zoom: Scroll → changes zoom level (1-20)
+```
+
+
+[COMPONENT 4: COORDINATES DISPLAY]
+-----------------------------------
+WHAT YOU SEE:
+- "Lat: 40.7128, Lng: -74.0060"
+- Updates in real-time as you move
+
+HOW IT WORKS:
+- Listens to map center changes
+- Displays current view coordinates
+
+CALCULATION/LOGIC:
+```javascript
+map.addListener('center_changed', () => {
+  const center = map.getCenter();
+  setCoordinates({
+    lat: center.lat().toFixed(4),
+    lng: center.lng().toFixed(4)
+  });
+});
+```
+
+
+═══════════════════════════════════════════════════════════════════════════════
+PAGE 7: ABOUT
+═══════════════════════════════════════════════════════════════════════════════
+
+[COMPONENT 1: VISION SECTION]
+-----------------------------------
+WHAT YOU SEE:
+- "Our Vision" heading
+- Text about making NASA data accessible
+- Illustration graphic
+
+HOW IT WORKS:
+- Static content
+- SVG illustration
+- Explains platform purpose
+
+
+[COMPONENT 2: METHODS SECTION]
+-----------------------------------
+WHAT YOU SEE:
+- "Our Methods" heading
+- Explanation of NASA APIs used
+- Technical approach
+
+HOW IT WORKS:
+- Lists data sources:
+  - NASA POWER (temperature)
+  - MODIS (vegetation/NDVI)
+  - EARTHDATA (satellite imagery)
+- Explains AI models
+
+
+═══════════════════════════════════════════════════════════════════════════════
+GLOBAL COMPONENTS (ON ALL PAGES)
+═══════════════════════════════════════════════════════════════════════════════
+
+[COMPONENT 1: NAVIGATION BAR]
+-----------------------------------
+WHAT YOU SEE:
+- Logo on left
+- Menu items: Home, Heat Risk, Green Space, Healthcare, Urban VR, 3D Maps, About
+- Hamburger menu on mobile
+
+HOW IT WORKS:
+- React Router for navigation
+- Active link highlighting
+- Responsive collapse on mobile
+
+CALCULATION/LOGIC:
+```javascript
+<NavLink 
+  to="/heat-risk"
+  className={({ isActive }) => isActive ? 'active' : ''}
+>
+  Heat Risk
+</NavLink>
+```
+
+
+[COMPONENT 2: AI CHATBOT]
+-----------------------------------
+WHAT YOU SEE:
+- Floating chat icon (bottom-right)
+- Click to open chat window
+- Ask questions about urban health
+
+HOW IT WORKS:
+- Google Gemini AI API
+- Context-aware responses
+- Natural language processing
+
+CALCULATION/LOGIC:
+```javascript
+const response = await fetch(
+  `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`,
+  {
+    method: 'POST',
+    body: JSON.stringify({
+      contents: [{
+        parts: [{
+          text: `You are UrbanScope AI Assistant. User question: ${userMessage}`
+        }]
+      }]
+    })
+  }
+);
+
+const data = await response.json();
+const aiResponse = data.candidates[0].content.parts[0].text;
+```
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                                END OF SCRIPT
+═══════════════════════════════════════════════════════════════════════════════
+
+This script provides component-by-component explanation with:
+✓ What you see visually
+✓ How it works technically  
+✓ Calculation formulas and logic
+✓ Example calculations with real numbers
+✓ Interpretation of results
+
+Use this for creating video tutorials, presentations, or documentation!

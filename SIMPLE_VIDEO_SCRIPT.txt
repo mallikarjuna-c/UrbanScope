@@ -1,0 +1,942 @@
+═══════════════════════════════════════════════════════════════════════════════
+                    URBANSCOPE - VIDEO EXPLANATION SCRIPT
+                    Simple Component-by-Component Guide
+═══════════════════════════════════════════════════════════════════════════════
+
+═══════════════════════════════════════════════════════════════════════════════
+PAGE 1: HOME PAGE
+═══════════════════════════════════════════════════════════════════════════════
+
+COMPONENT 1: HERO SECTION WITH EARTH BACKGROUND
+-----------------------------------
+WHAT IT SHOWS:
+A beautiful looping video of Earth from space with the UrbanScope title and tagline overlaid on top.
+
+PURPOSE:
+Creates an immersive first impression and immediately connects users to the idea that we're using real NASA satellite data from space.
+
+HOW IT WORKS:
+The Earth video plays continuously in the background while text appears in the center, giving users a sense of looking at Earth from a satellite's perspective.
+
+
+COMPONENT 2: THREE MAIN ANALYSIS CARDS
+-----------------------------------
+WHAT IT SHOWS:
+Three clickable cards displayed side by side:
+- Heat Risk Analysis (red/orange theme)
+- Green Space Analysis (green theme)
+- Healthcare Access (blue theme)
+
+PURPOSE:
+These are the three main features of the platform. Each card is a gateway to detailed analysis.
+
+HOW IT WORKS:
+Hover over any card and it lifts up with a glow effect. Click to navigate to that analysis page.
+
+
+COMPONENT 3: NASA PICTURE OF THE DAY
+-----------------------------------
+WHAT IT SHOWS:
+A stunning astronomy image that changes daily, with title and description.
+
+PURPOSE:
+Showcases NASA's daily astronomy content and reinforces our connection to NASA data.
+
+HOW IT WORKS:
+Automatically fetches the latest image from NASA's APOD (Astronomy Picture of the Day) API each day.
+
+
+═══════════════════════════════════════════════════════════════════════════════
+PAGE 2: HEAT RISK ANALYSIS
+═══════════════════════════════════════════════════════════════════════════════
+
+COMPONENT 1: CITY SEARCH BAR
+-----------------------------------
+WHAT IT SHOWS:
+A search box where you can type any city name worldwide.
+
+PURPOSE:
+Allows users to analyze heat risk for any city on Earth.
+
+HOW IT WORKS:
+As you type, it suggests matching cities. Select one and it stores the city's coordinates for analysis.
+
+EXAMPLE:
+Type "Del" → Shows "Delhi, India" → Click to select → Coordinates (28.7°N, 77.1°E) saved
+
+
+COMPONENT 2: DATE SELECTOR
+-----------------------------------
+WHAT IT SHOWS:
+A calendar input showing today's date by default.
+
+PURPOSE:
+Lets you analyze heat risk for any past date to see historical patterns.
+
+HOW IT WORKS:
+Click to open calendar, select a date (can't pick future dates), and analysis uses that date's temperature data.
+
+
+COMPONENT 3: ANALYZE BUTTON
+-----------------------------------
+WHAT IT SHOWS:
+A blue button that says "Analyze Heat Risk" (changes to "Analyzing..." when working).
+
+PURPOSE:
+Triggers the AI analysis using NASA satellite data.
+
+HOW IT WORKS:
+Click the button → Sends city and date to backend → Backend fetches NASA data → Results appear below
+
+
+COMPONENT 4: TEMPERATURE CARD
+-----------------------------------
+WHAT IT SHOWS:
+Large number like "35.2°C" with label "Land Surface Temp"
+
+PURPOSE:
+Shows the actual ground temperature from NASA satellites.
+
+HOW IT WORKS:
+NASA POWER API provides temperature readings from satellites measuring Earth's surface. This is the base temperature before considering urban effects.
+
+EXAMPLE:
+Delhi in summer might show 42°C, while London in winter shows 8°C.
+
+
+COMPONENT 5: HEAT INDEX CARD
+-----------------------------------
+WHAT IT SHOWS:
+Temperature with Urban Heat Island effect added, like "37.5°C" labeled "Feels Like (with UHI)"
+
+PURPOSE:
+Shows how much hotter it actually feels in the city due to urban development.
+
+HOW IT WORKS:
+Takes base temperature and adds extra heat from:
+- Dense population (more people = more heat)
+- Lack of trees (trees provide cooling)
+- Buildings and concrete (absorb and radiate heat)
+
+EXAMPLE:
+Base temp: 35°C
+Urban heat island effect: +2.5°C
+Feels like: 37.5°C
+
+INTERPRETATION:
+Cities are always hotter than surrounding rural areas. This "urban heat island" effect can add 2-6°C to the temperature.
+
+
+COMPONENT 6: RISK INDEX CARD
+-----------------------------------
+WHAT IT SHOWS:
+A score from 0-10, like "7/10" with color coding (green=safe, red=dangerous)
+
+PURPOSE:
+Single number that tells you how dangerous the heat is.
+
+HOW IT WORKS:
+Combines three factors:
+1. Temperature (50% weight) - Higher temp = higher risk
+2. Population density (30% weight) - More people = more vulnerable
+3. Tree coverage (20% weight) - More trees = lower risk
+
+EXAMPLE:
+Delhi summer: 42°C temp + high density + low trees = 7.2/10 (High Risk)
+London winter: 8°C temp + medium density + good trees = 2.1/10 (Low Risk)
+
+SCALE:
+0-3: Low Risk (Green) - Safe, no special precautions
+3-5: Moderate Risk (Yellow) - Stay hydrated
+5-7: High Risk (Orange) - Limit outdoor activity
+7-10: Critical Risk (Red) - Dangerous, stay indoors
+
+
+COMPONENT 7: AFFECTED POPULATION CARD
+-----------------------------------
+WHAT IT SHOWS:
+Number like "675K" labeled "Vulnerable Groups"
+
+PURPOSE:
+Shows how many people are at risk from the heat.
+
+HOW IT WORKS:
+Estimates vulnerable population based on:
+- Total city population
+- Risk level
+- Demographics (elderly, children, outdoor workers)
+
+EXAMPLE:
+City population: 1.5 million
+Risk level: Critical (7+)
+Vulnerable percentage: 45%
+Affected: 675,000 people
+
+WHO'S VULNERABLE:
+- Elderly people (65+)
+- Young children (under 5)
+- Outdoor workers
+- Low-income communities without AC
+- People with heart/lung conditions
+
+
+COMPONENT 8: TEMPERATURE TRENDS CHART
+-----------------------------------
+WHAT IT SHOWS:
+Line graph showing temperature changes over the past 12 months.
+
+PURPOSE:
+Visualizes seasonal patterns and temperature trends.
+
+HOW IT WORKS:
+Plots monthly average temperatures to show:
+- Hottest months (summer peak)
+- Coolest months (winter low)
+- Seasonal transitions
+
+EXAMPLE:
+Delhi pattern:
+- Jan-Feb: Cool (18-22°C)
+- Mar-May: Rising heat (28-42°C)
+- Jun-Aug: Monsoon cooling (30-35°C)
+- Sep-Dec: Gradual cooling (32-18°C)
+
+
+COMPONENT 9: 3D SATELLITE MAP
+-----------------------------------
+WHAT IT SHOWS:
+Interactive 3D map of the selected city with satellite imagery.
+
+PURPOSE:
+Lets you explore the city visually and see urban layout.
+
+HOW IT WORKS:
+Google Maps displays the city in 3D with:
+- Satellite imagery from space
+- 3D building models
+- Ability to rotate and tilt view
+- Street View option (drag orange person icon)
+
+CONTROLS:
+- Drag to move around
+- Scroll to zoom in/out
+- Ctrl+Drag to rotate
+- Shift+Drag to tilt for 3D view
+
+
+COMPONENT 10: COOLING POTENTIAL CALCULATOR
+-----------------------------------
+WHAT IT SHOWS:
+Text like "Potential Temperature Reduction: -3.5°C" and "Timeframe: 3-5 years"
+
+PURPOSE:
+Shows how much cooler the city could become by adding more trees.
+
+HOW IT WORKS:
+Calculates based on research showing:
+- Every 10% increase in tree coverage = 1-2°C cooling
+- Compares current trees to WHO target (30%)
+- Estimates time needed to plant trees
+
+EXAMPLE:
+Current tree coverage: 15%
+WHO target: 30%
+Gap: 15% more trees needed
+Cooling effect: 15% ÷ 10% × 1.5°C = 2.25°C cooler
+Time: Need to plant 15,000 trees at 10,000/year = 2-3 years
+
+INTERPRETATION:
+This shows the city CAN reduce heat significantly through green infrastructure. It's not permanent - we can fix it!
+
+
+COMPONENT 11: RECOMMENDATIONS LIST
+-----------------------------------
+WHAT IT SHOWS:
+Numbered list of specific actions like:
+1. "Establish emergency cooling centers in public buildings"
+2. "Issue heat health warnings to vulnerable populations"
+3. "Plant 50,000 trees over next 3 years"
+
+PURPOSE:
+Provides actionable steps city planners can take immediately.
+
+HOW IT WORKS:
+AI generates recommendations based on:
+- Risk level (critical = urgent actions)
+- Tree coverage gap
+- Population vulnerability
+- WHO best practices
+
+EXAMPLE FOR CRITICAL RISK:
+- Immediate: Open cooling centers
+- Short-term: Heat warnings, water stations
+- Long-term: Plant trees, cool roofs, green corridors
+
+EXAMPLE FOR LOW RISK:
+- Maintain current green spaces
+- Continue monitoring
+- Gradual improvements
+
+
+═══════════════════════════════════════════════════════════════════════════════
+PAGE 3: GREEN SPACE ANALYSIS
+═══════════════════════════════════════════════════════════════════════════════
+
+COMPONENT 1: THREE PERSPECTIVES CARDS
+-----------------------------------
+WHAT IT SHOWS:
+Three cards explaining the analysis framework:
+1. AVAILABILITY - How much green space exists
+2. ACCESSIBILITY - How close are people to parks
+3. VISIBILITY - How visible is the greenery
+
+PURPOSE:
+Explains that we analyze green space from three different angles, not just one number.
+
+HOW IT WORKS:
+This is based on scientific research (GreenEx_Py methodology) that says you need to measure:
+- Quantity (how much)
+- Proximity (how close)
+- Visibility (can you see it)
+
+
+COMPONENT 2: COVERAGE PERCENTAGE CARD
+-----------------------------------
+WHAT IT SHOWS:
+Large percentage like "18.5%" labeled "Green Space Coverage"
+
+PURPOSE:
+Shows what percentage of the city is covered by vegetation.
+
+HOW IT WORKS:
+NASA satellites measure vegetation using NDVI (plant health indicator). The system counts how many pixels show vegetation vs. buildings/roads.
+
+EXAMPLE:
+City area: 100 km²
+Vegetated area: 18.5 km²
+Coverage: 18.5%
+
+INTERPRETATION:
+- Below 15%: Critical (very little green space)
+- 15-25%: Below target (needs improvement)
+- 25-30%: Approaching target
+- Above 30%: Meets WHO standard ✓
+
+WHO RECOMMENDS: 30% minimum coverage for healthy cities
+
+
+COMPONENT 3: NDVI SCORE CARD
+-----------------------------------
+WHAT IT SHOWS:
+Number like "0.35" with label "Moderate Vegetation"
+
+PURPOSE:
+Shows vegetation health and density from satellite data.
+
+HOW IT WORKS:
+NDVI = Normalized Difference Vegetation Index
+- Satellites measure how plants reflect light
+- Healthy plants reflect infrared strongly
+- Score ranges from -1 to 1
+
+SCALE:
+- Below 0: Water, snow, bare ground
+- 0-0.2: Urban areas, sparse vegetation
+- 0.2-0.4: Grasslands, shrubs (MODERATE)
+- 0.4-0.6: Good vegetation
+- 0.6-1.0: Dense forests (EXCELLENT)
+
+EXAMPLE:
+Score 0.35 = Moderate vegetation
+This means the city has some green space but it's not very dense. Think scattered trees and small parks, not forests.
+
+
+COMPONENT 4: ACCESSIBILITY SCORE
+-----------------------------------
+WHAT IT SHOWS:
+Rating like "Good" or "Poor" with distance "450m to nearest park"
+
+PURPOSE:
+Tells you how far people have to walk to reach green space.
+
+HOW IT WORKS:
+Measures walking distance from any point in the city to the closest park.
+
+WHO STANDARD: Parks should be within 300 meters (5-minute walk)
+
+SCALE:
+- Under 300m: Excellent ✓
+- 300-500m: Good
+- 500-800m: Moderate
+- Over 800m: Poor ✗
+
+EXAMPLE:
+Distance: 450m
+Rating: Good (close to target)
+Walking time: ~6 minutes
+
+INTERPRETATION:
+Even if a city has lots of parks (good coverage), if they're far apart, accessibility is poor. Both matter!
+
+
+COMPONENT 5: GAP ANALYSIS VISUAL BAR
+-----------------------------------
+WHAT IT SHOWS:
+Progress bar with:
+- Green section showing current coverage (18.5%)
+- Gray section showing gap to target (11.5%)
+- Labels: "Current" and "Target: 30%"
+
+PURPOSE:
+Visual representation of how far the city is from WHO standard.
+
+HOW IT WORKS:
+Simple subtraction:
+Current: 18.5%
+Target: 30%
+Gap: 30 - 18.5 = 11.5% more green space needed
+
+INTERPRETATION:
+The green bar shows what you have.
+The gray area shows what you still need.
+Longer gray area = more work needed.
+
+EXAMPLE:
+If bar is 62% filled (18.5/30), you're about 2/3 of the way there.
+
+
+COMPONENT 6: PER CAPITA GREEN SPACE
+-----------------------------------
+WHAT IT SHOWS:
+Three numbers:
+- "Green Space Per Capita: 11.1 m²/person"
+- "WHO Recommendation: 9 m²/person"
+- "Status: Meets Standard ✓"
+
+PURPOSE:
+Shows if there's enough green space per person, not just total amount.
+
+HOW IT WORKS:
+Takes total green area and divides by population.
+
+EXAMPLE:
+Total green area: 16.6 km² = 16,600,000 m²
+Population: 1,500,000 people
+Per capita: 16,600,000 ÷ 1,500,000 = 11.1 m² per person
+
+INTERPRETATION:
+WHO says each person needs at least 9 m² of green space (about the size of a small bedroom).
+11.1 m² exceeds this, so ✓ GOOD!
+
+INTERESTING NOTE:
+A city can have:
+- Low coverage % (18.5%) but
+- High per capita (11.1 m²)
+
+Both are true! Coverage = % of land, Per capita = space per person.
+
+
+COMPONENT 7: PARKS COUNT & DISTRIBUTION
+-----------------------------------
+WHAT IT SHOWS:
+Statistics like:
+- "Total Parks: 45"
+- "Average Size: 0.37 km²"
+- "Street Trees: 28,000"
+
+PURPOSE:
+Gives detailed breakdown of green infrastructure.
+
+HOW IT WORKS:
+Counts parks from map data and calculates averages.
+
+EXAMPLE:
+45 parks
+Total area: 16.6 km²
+Average: 16.6 ÷ 45 = 0.37 km² per park
+(That's about 37 hectares or 91 acres - medium-sized park)
+
+Street trees: Estimated from road network length
+
+INTERPRETATION:
+More parks = better distribution
+Larger average size = substantial parks, not just tiny patches
+More street trees = better urban cooling and air quality
+
+
+COMPONENT 8: VISIBILITY INDEX
+-----------------------------------
+WHAT IT SHOWS:
+Percentage like "32%" with progress bar
+
+PURPOSE:
+Measures how much greenery you can actually see while walking around.
+
+HOW IT WORKS:
+Simulates walking through the city and checks if you can see green space within 100 meters at each point.
+
+EXAMPLE:
+Sample 10,000 points along streets
+At 3,200 points, you can see greenery
+Visibility: 3,200 ÷ 10,000 = 32%
+
+INTERPRETATION:
+- Below 20%: Poor - feels like concrete jungle
+- 20-40%: Moderate - some green visible
+- 40-60%: Good - regularly see greenery
+- Above 60%: Excellent - green city feel
+
+32% = Moderate visibility
+You'll see some trees and parks while walking, but not everywhere.
+
+
+COMPONENT 9: RECOMMENDATIONS LIST
+-----------------------------------
+WHAT IT SHOWS:
+Specific actions like:
+1. "Increase green space by 11.5%"
+2. "Add 5-8 new parks (currently 45)"
+3. "Street tree planting program: 10,000 trees"
+4. "Develop linear parks along waterways"
+
+PURPOSE:
+Tells city planners exactly what to do to reach WHO standards.
+
+HOW IT WORKS:
+Based on gap analysis:
+- Need 11.5% more coverage
+- Estimate 2% coverage per new park
+- Need 5-6 new parks
+- Plus street trees for quick wins
+
+INTERPRETATION:
+These aren't vague suggestions - they're specific, measurable actions with clear targets.
+
+
+═══════════════════════════════════════════════════════════════════════════════
+PAGE 4: HEALTHCARE ACCESS ANALYSIS
+═══════════════════════════════════════════════════════════════════════════════
+
+COMPONENT 1: FACILITIES COUNT CARD
+-----------------------------------
+WHAT IT SHOWS:
+Numbers like:
+- "98 Total Facilities"
+- "28 Primary Care Centers"
+- "5 Hospitals"
+- "12 Emergency Centers"
+
+PURPOSE:
+Shows how many healthcare facilities exist in the city.
+
+HOW IT WORKS:
+Counts facilities from map databases and categorizes them by type.
+
+INTERPRETATION:
+More facilities = better, but location matters more than count!
+A city could have 100 facilities all in one neighborhood - that's not helpful.
+
+
+COMPONENT 2: 15-MINUTE ACCESS CARD
+-----------------------------------
+WHAT IT SHOWS:
+Large percentage like "65%" labeled "Population with 15-min Access"
+
+PURPOSE:
+Shows what percentage of people can reach a healthcare facility within 15 minutes by car.
+
+HOW IT WORKS:
+For each facility, draws a 15-minute drive-time zone around it. Counts how many people live within these zones.
+
+EXAMPLE:
+Total population: 1,500,000
+People within 15-min: 975,000
+Access: 975,000 ÷ 1,500,000 = 65%
+
+INTERPRETATION:
+- Below 60%: Critical ✗ (Red)
+- 60-75%: Needs Improvement (Orange)
+- 75-85%: Good (Yellow)
+- Above 85%: Excellent ✓ (Green)
+
+65% = Needs Improvement
+This means 35% of people (525,000) live too far from healthcare!
+
+
+COMPONENT 3: HOSPITAL BEDS METRIC
+-----------------------------------
+WHAT IT SHOWS:
+Three numbers:
+- "Current: 12.67 per 1,000 people"
+- "WHO Target: 3 per 1,000"
+- "Gap: 0 beds needed"
+
+PURPOSE:
+Compares hospital bed availability to WHO minimum standard.
+
+HOW IT WORKS:
+Total beds: 19,000
+Population: 1,500,000
+Beds per 1,000: (19,000 ÷ 1,500,000) × 1,000 = 12.67
+
+WHO requires: 3 beds per 1,000 = 4,500 total beds
+City has: 19,000 beds
+Gap: 4,500 - 19,000 = -14,500 (SURPLUS!)
+Gap shown: 0 (no additional beds needed)
+
+INTERPRETATION:
+Gap = 0 means GOOD NEWS! ✓
+The city has 4x more beds than WHO minimum.
+This is excellent - plenty of capacity for patients.
+
+
+COMPONENT 4: DOCTORS METRIC
+-----------------------------------
+WHAT IT SHOWS:
+- "Current: 5.42 per 1,000 people"
+- "WHO Target: 1 per 1,000"
+- "Gap: 0 doctors needed"
+
+PURPOSE:
+Compares doctor availability to WHO standard.
+
+HOW IT WORKS:
+Total doctors: 8,130
+Population: 1,500,000
+Doctors per 1,000: (8,130 ÷ 1,500,000) × 1,000 = 5.42
+
+WHO requires: 1 per 1,000 = 1,500 doctors
+City has: 8,130 doctors
+Gap: 0 (surplus of 6,630 doctors!)
+
+INTERPRETATION:
+Gap = 0 means EXCELLENT! ✓
+City has 5x more doctors than WHO minimum.
+Quality of care is very good.
+
+
+COMPONENT 5: FACILITIES PER 100K METRIC
+-----------------------------------
+WHAT IT SHOWS:
+- "Current: 6.5 per 100,000 people"
+- "WHO Target: 10 per 100,000"
+- "Gap: ~52 facilities needed"
+
+PURPOSE:
+Measures facility density - are there enough locations?
+
+HOW IT WORKS:
+Total facilities: 98
+Population: 1,500,000
+Per 100K: (98 ÷ 1,500,000) × 100,000 = 6.53
+
+WHO requires: 10 per 100K = 150 total facilities
+City has: 98 facilities
+Gap: 150 - 98 = 52 facilities needed ✗
+
+INTERPRETATION:
+Gap = 52 means PROBLEM! ✗
+Even though beds and doctors are plentiful, there aren't enough facility LOCATIONS.
+
+KEY INSIGHT:
+- Beds: Surplus ✓
+- Doctors: Surplus ✓
+- Facilities: Deficit ✗
+
+This means resources are concentrated in too few locations. People have to travel far even though quality is good.
+
+SOLUTION: Build more facilities in underserved areas, not add more beds to existing ones.
+
+
+COMPONENT 6: UNDERSERVED AREAS MAP
+-----------------------------------
+WHAT IT SHOWS:
+Map with red zones highlighted showing areas beyond 15-minute access.
+
+PURPOSE:
+Visually identifies neighborhoods that lack healthcare access.
+
+HOW IT WORKS:
+Highlights areas where:
+- No facility within 15-minute drive
+- High population density
+- Vulnerable demographics
+
+EXAMPLE:
+"North District" - 45,000 people, 25 min to nearest facility
+"East Suburbs" - 38,000 people, 20 min to nearest facility
+
+INTERPRETATION:
+These red zones are priority areas for new facilities.
+
+
+COMPONENT 7: RECOMMENDED FACILITY LOCATIONS
+-----------------------------------
+WHAT IT SHOWS:
+Map markers with text like:
+"Priority 1: North District (serves 45K people)"
+"Priority 2: East Suburbs (serves 38K people)"
+
+PURPOSE:
+Shows optimal locations for new healthcare facilities.
+
+HOW IT WORKS:
+Algorithm finds locations that:
+- Serve the most underserved people
+- Minimize overlap with existing facilities
+- Maximize population coverage
+
+EXAMPLE:
+Building facility in North District would:
+- Give 45,000 people access
+- Reduce average drive time from 25 to 8 minutes
+- Cost-effective: serves large population
+
+INTERPRETATION:
+These aren't random suggestions - they're optimized to help the most people with fewest new facilities.
+
+
+COMPONENT 8: WAIT TIME METRIC
+-----------------------------------
+WHAT IT SHOWS:
+"Average Wait Time: 45 minutes" with target "< 30 minutes"
+
+PURPOSE:
+Shows how long patients wait to see a doctor.
+
+HOW IT WORKS:
+Estimates based on:
+- Facility capacity (beds × patients per day)
+- Patient demand (% of population seeking care daily)
+- Utilization rate (how full facilities are)
+
+EXAMPLE:
+High utilization (busy facilities) = longer waits
+Low utilization (empty facilities) = shorter waits
+
+45 minutes = Moderate wait (could be better)
+
+INTERPRETATION:
+Even with good bed/doctor ratios, if facilities are far apart, people cluster at accessible ones, causing waits.
+
+
+COMPONENT 9: QUALITY SCORE
+-----------------------------------
+WHAT IT SHOWS:
+"Quality Score: 72/100" with breakdown
+
+PURPOSE:
+Single number summarizing overall healthcare system quality.
+
+HOW IT WORKS:
+Combines multiple factors:
+- Access percentage (30% weight)
+- Facility density (20% weight)
+- Beds per capita (20% weight)
+- Doctors per capita (15% weight)
+- Wait times (15% weight)
+
+EXAMPLE:
+Access: 65/100
+Facilities: 65/100
+Beds: 100/100 (capped at 100)
+Doctors: 100/100 (capped at 100)
+Wait: 40/100
+
+Weighted average: 72/100
+
+INTERPRETATION:
+- 0-40: Poor
+- 40-60: Fair
+- 60-80: Good (this city)
+- 80-100: Excellent
+
+72 = Good but room for improvement
+Main issue: Geographic access, not resource quality
+
+
+═══════════════════════════════════════════════════════════════════════════════
+PAGE 5: URBAN VR
+═══════════════════════════════════════════════════════════════════════════════
+
+COMPONENT 1: VIDEO GALLERY GRID
+-----------------------------------
+WHAT IT SHOWS:
+9 video cards arranged in a grid, each with:
+- Thumbnail preview
+- Title (e.g., "Urban Heat Island Visualization")
+- Category tag (e.g., "Heat Analysis")
+
+PURPOSE:
+Provides immersive 360° video experiences of urban health concepts.
+
+HOW IT WORKS:
+Hover over any card to see video preview. Click to open full player.
+
+VIDEOS INCLUDE:
+1. Urban Heat Island Visualization
+2. Green Space Distribution
+3. Air Quality Monitoring
+4. Urban Development Overview
+5. Healthcare Accessibility
+6. Sustainable City Vision
+7. Urban Health Indicators
+8. Smart City Infrastructure
+9. Climate Resilience Planning
+
+
+COMPONENT 2: VIDEO PLAYER
+-----------------------------------
+WHAT IT SHOWS:
+Large video player with:
+- 360° video playback
+- Play/Pause controls
+- Fullscreen option
+- Video title and description
+
+PURPOSE:
+Lets you experience urban environments in immersive 360° view.
+
+HOW IT WORKS:
+- Drag video to look around (360° view)
+- Works with VR headsets
+- Mobile gyroscope support (tilt phone to look around)
+
+INTERPRETATION:
+These videos help visualize abstract concepts like "heat islands" and "green corridors" in a tangible way.
+
+
+═══════════════════════════════════════════════════════════════════════════════
+PAGE 6: 3D MAPS
+═══════════════════════════════════════════════════════════════════════════════
+
+COMPONENT 1: GLOBAL SEARCH BAR
+-----------------------------------
+WHAT IT SHOWS:
+Search box with placeholder "Search for any city, landmark, or address..."
+
+PURPOSE:
+Lets you explore any location on Earth in 3D.
+
+HOW IT WORKS:
+Type location name → Get suggestions → Select → Map jumps to that location
+
+EXAMPLE:
+Type "Eiffel Tower" → Map centers on Paris with 3D view of the tower
+
+
+COMPONENT 2: QUICK LOCATION BUTTONS
+-----------------------------------
+WHAT IT SHOWS:
+8 buttons for major cities: New York, London, Tokyo, Dubai, Paris, Sydney, Mumbai, Singapore
+
+PURPOSE:
+One-click access to popular cities.
+
+HOW IT WORKS:
+Click button → Instantly jump to that city in 3D view
+
+
+COMPONENT 3: 3D MAP VIEWER
+-----------------------------------
+WHAT IT SHOWS:
+Interactive satellite map with:
+- 3D buildings
+- Satellite imagery
+- Street View option
+- Rotation and tilt controls
+
+PURPOSE:
+Explore cities in stunning 3D detail.
+
+HOW IT WORKS:
+- Drag to move around
+- Scroll to zoom
+- Ctrl+Drag to rotate view
+- Shift+Drag to tilt for 3D perspective
+- Drag orange person icon to enter Street View
+
+INTERPRETATION:
+This helps you understand urban layout, building density, and green space distribution visually.
+
+
+COMPONENT 4: COORDINATES DISPLAY
+-----------------------------------
+WHAT IT SHOWS:
+Current map center coordinates like "Lat: 40.7128, Lng: -74.0060"
+
+PURPOSE:
+Shows exact location you're viewing.
+
+HOW IT WORKS:
+Updates in real-time as you move the map.
+
+
+═══════════════════════════════════════════════════════════════════════════════
+PAGE 7: ABOUT
+═══════════════════════════════════════════════════════════════════════════════
+
+COMPONENT 1: VISION SECTION
+-----------------------------------
+WHAT IT SHOWS:
+Text explaining UrbanScope's mission with illustration.
+
+PURPOSE:
+Explains why the platform exists: to make NASA data accessible for healthier cities.
+
+
+COMPONENT 2: METHODS SECTION
+-----------------------------------
+WHAT IT SHOWS:
+Explanation of data sources and technical approach.
+
+PURPOSE:
+Describes how we use:
+- NASA POWER API (temperature data)
+- MODIS satellites (vegetation/NDVI)
+- EARTHDATA (satellite imagery)
+- AI models for analysis
+
+
+═══════════════════════════════════════════════════════════════════════════════
+GLOBAL COMPONENTS (APPEAR ON ALL PAGES)
+═══════════════════════════════════════════════════════════════════════════════
+
+COMPONENT 1: NAVIGATION BAR
+-----------------------------------
+WHAT IT SHOWS:
+Top bar with logo and menu items: Home, Heat Risk, Green Space, Healthcare, Urban VR, 3D Maps, About
+
+PURPOSE:
+Allows navigation between all pages.
+
+HOW IT WORKS:
+Click any menu item to go to that page. Active page is highlighted in cyan color.
+
+
+COMPONENT 2: AI CHATBOT (FLOATING ICON)
+-----------------------------------
+WHAT IT SHOWS:
+Chat bubble icon in bottom-right corner.
+
+PURPOSE:
+Provides instant answers about urban health concepts.
+
+HOW IT WORKS:
+Click icon → Chat window opens → Type question → Get AI-powered answer
+
+EXAMPLE QUESTIONS:
+- "What is urban heat island effect?"
+- "Why is green space important?"
+- "How do I interpret the risk index?"
+
+POWERED BY: Google Gemini AI
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                                END OF SCRIPT
+═══════════════════════════════════════════════════════════════════════════════
+
+This script explains WHAT each component does and WHY it matters, without technical code details.
+
+Perfect for creating video tutorials or presentations for non-technical audiences!

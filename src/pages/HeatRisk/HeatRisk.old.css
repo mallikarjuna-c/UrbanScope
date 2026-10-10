@@ -1,0 +1,574 @@
+/* Heat Risk Page Styles */
+.heat-risk-page {
+  min-height: 100vh;
+  color: #fff;
+  padding-bottom: 4rem;
+  position: relative;
+}
+
+/* Header */
+.heat-header {
+  padding: 6rem 2rem 4rem;
+  text-align: center;
+  background: linear-gradient(180deg, rgba(239, 68, 68, 0.1) 0%, rgba(15, 23, 42, 0.9) 100%);
+  border-bottom: 2px solid rgba(239, 68, 68, 0.3);
+}
+
+.heat-title {
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #ef4444 0%, #f59e0b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.heat-subtitle {
+  font-size: 1.25rem;
+  color: #cbd5e1;
+  margin-bottom: 2rem;
+}
+
+.heat-info-badges {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.info-badge {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 0.5rem 1.5rem;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  color: #ef4444;
+  font-weight: 600;
+}
+
+/* Model Info Section */
+.model-info-section {
+  padding: 4rem 2rem;
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.model-info-card {
+  background: rgba(30, 41, 59, 0.6);
+  padding: 3rem;
+  border-radius: 20px;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.model-info-card h2 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: #ef4444;
+}
+
+.algorithm-formula {
+  background: rgba(15, 23, 42, 0.8);
+  padding: 2rem;
+  border-radius: 15px;
+  margin-bottom: 2rem;
+  border-left: 4px solid #ef4444;
+}
+
+.algorithm-formula code {
+  font-size: 1.1rem;
+  color: #fbbf24;
+  font-family: 'Courier New', monospace;
+}
+
+.model-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.detail-item h4 {
+  color: #f59e0b;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+}
+
+.detail-item ul {
+  list-style: none;
+  padding: 0;
+}
+
+.detail-item li {
+  padding: 0.5rem 0;
+  color: #cbd5e1;
+  line-height: 1.6;
+}
+
+.model-source {
+  padding-top: 2rem;
+  border-top: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.model-source a {
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.model-source a:hover {
+  text-decoration: underline;
+}
+
+/* Analysis Section */
+.analysis-section {
+  padding: 4rem 2rem;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 3rem;
+  color: #fff;
+}
+
+.analysis-controls {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin-bottom: 3rem;
+  padding: 2rem;
+  background: rgba(30, 41, 59, 0.6);
+  border-radius: 15px;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 200px;
+  flex: 1;
+}
+
+.control-group label {
+  font-weight: 600;
+  color: #cbd5e1;
+  font-size: 0.9rem;
+}
+
+.selected-city-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 8px;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #22c55e;
+}
+
+.info-icon {
+  font-size: 1.2rem;
+}
+
+.coords {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  font-family: 'Courier New', monospace;
+}
+
+.control-select,
+.control-input {
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgba(15, 23, 42, 0.8);
+  color: #fff;
+  font-size: 1rem;
+}
+
+.analyze-btn {
+  padding: 0.75rem 2rem;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.analyze-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(239, 68, 68, 0.3);
+}
+
+.analyze-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Risk Overview */
+.risk-overview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.risk-card {
+  background: rgba(30, 41, 59, 0.6);
+  padding: 2rem;
+  border-radius: 15px;
+  text-align: center;
+  border: 2px solid;
+  transition: all 0.3s ease;
+}
+
+.risk-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.risk-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.risk-card h3 {
+  font-size: 1.1rem;
+  color: #cbd5e1;
+  margin-bottom: 1rem;
+}
+
+.risk-value {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.risk-label {
+  font-size: 0.9rem;
+  color: #94a3b8;
+}
+
+/* Visualization Section */
+.visualization-section,
+.map-section {
+  margin: 3rem 0;
+  padding: 2rem;
+  background: rgba(30, 41, 59, 0.6);
+  border-radius: 15px;
+}
+
+.visualization-section h3,
+.map-section h3 {
+  margin-bottom: 1.5rem;
+  color: #ef4444;
+}
+
+.viz-description,
+.map-description {
+  margin-top: 1rem;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+/* Detailed Metrics */
+.detailed-metrics {
+  margin: 3rem 0;
+  padding: 2rem;
+  background: rgba(30, 41, 59, 0.6);
+  border-radius: 15px;
+}
+
+.detailed-metrics h3 {
+  margin-bottom: 2rem;
+  color: #f59e0b;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.metric-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.5rem;
+  background: rgba(15, 23, 42, 0.8);
+  border-radius: 10px;
+  border-left: 4px solid #ef4444;
+}
+
+.metric-label {
+  font-size: 0.9rem;
+  color: #94a3b8;
+}
+
+.metric-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* Vulnerable Groups */
+.vulnerable-section {
+  margin: 3rem 0;
+  padding: 2rem;
+  background: rgba(30, 41, 59, 0.6);
+  border-radius: 15px;
+}
+
+.vulnerable-section h3 {
+  margin-bottom: 2rem;
+  color: #f59e0b;
+}
+
+.vulnerable-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.vulnerable-card {
+  background: rgba(15, 23, 42, 0.8);
+  padding: 2rem;
+  border-radius: 15px;
+  text-align: center;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.vulnerable-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.vulnerable-card h4 {
+  color: #ef4444;
+  margin-bottom: 1rem;
+}
+
+.vulnerable-count {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.vulnerable-desc {
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+/* Cooling Section */
+.cooling-section {
+  margin: 3rem 0;
+  padding: 2rem;
+  background: rgba(30, 41, 59, 0.6);
+  border-radius: 15px;
+}
+
+.cooling-section h3 {
+  margin-bottom: 2rem;
+  color: #3b82f6;
+}
+
+.cooling-card {
+  background: rgba(15, 23, 42, 0.8);
+  padding: 2rem;
+  border-radius: 15px;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.cooling-stat {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cooling-stat.highlight {
+  background: rgba(59, 130, 246, 0.1);
+  padding: 1.5rem;
+  border-radius: 10px;
+  margin-top: 1rem;
+  border: 2px solid rgba(59, 130, 246, 0.3);
+}
+
+.cooling-label {
+  color: #cbd5e1;
+}
+
+.cooling-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #3b82f6;
+}
+
+.cooling-timeframe {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+  color: #94a3b8;
+}
+
+/* Recommendations */
+.recommendations-section {
+  margin: 3rem 0;
+  padding: 2rem;
+  background: rgba(30, 41, 59, 0.6);
+  border-radius: 15px;
+}
+
+.recommendations-section h3 {
+  margin-bottom: 2rem;
+  color: #22c55e;
+}
+
+.recommendations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.recommendation-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: rgba(15, 23, 42, 0.8);
+  border-radius: 10px;
+  border-left: 4px solid #22c55e;
+  align-items: center;
+}
+
+.rec-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.recommendation-item p {
+  color: #cbd5e1;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Data Source */
+.data-source-section {
+  margin: 3rem 0;
+  padding: 2rem;
+  background: rgba(30, 41, 59, 0.6);
+  border-radius: 15px;
+  text-align: center;
+}
+
+.data-source-section h3 {
+  margin-bottom: 1rem;
+  color: #3b82f6;
+}
+
+.data-source-text {
+  color: #94a3b8;
+  font-size: 0.95rem;
+}
+
+/* Methodology Section */
+.methodology-section {
+  padding: 4rem 2rem;
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.methodology-section h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 3rem;
+  color: #fff;
+}
+
+.methodology-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.method-card {
+  background: rgba(30, 41, 59, 0.6);
+  padding: 2rem;
+  border-radius: 15px;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  transition: all 0.3s ease;
+}
+
+.method-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(239, 68, 68, 0.5);
+  box-shadow: 0 10px 30px rgba(239, 68, 68, 0.2);
+}
+
+.method-card h4 {
+  color: #ef4444;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+}
+
+.method-card p {
+  color: #cbd5e1;
+  line-height: 1.6;
+}
+
+/* Container */
+.container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .heat-title {
+    font-size: 2.5rem;
+  }
+
+  .analysis-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .control-group {
+    min-width: 100%;
+  }
+
+  .risk-overview {
+    grid-template-columns: 1fr;
+  }
+
+  .methodology-grid {
+    grid-template-columns: 1fr;
+  }
+}

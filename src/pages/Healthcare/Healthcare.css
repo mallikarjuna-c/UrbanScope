@@ -1,0 +1,530 @@
+/* Healthcare Page Styles */
+.healthcare-page {
+  min-height: 100vh;
+  color: #fff;
+  padding-bottom: 4rem;
+  position: relative;
+}
+
+/* Header */
+.healthcare-header {
+  padding: 6rem 2rem 4rem;
+  text-align: center;
+  background: linear-gradient(180deg, rgba(59, 130, 246, 0.1) 0%, rgba(15, 23, 42, 0.9) 100%);
+  border-bottom: 2px solid rgba(59, 130, 246, 0.3);
+}
+
+.healthcare-title {
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.healthcare-subtitle {
+  font-size: 1.25rem;
+  color: #cbd5e1;
+  margin-bottom: 2rem;
+}
+
+.healthcare-info-badges {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Model Info */
+.methodology-grid-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.method-info-card {
+  background: rgba(15, 23, 42, 0.8);
+  padding: 2rem;
+  border-radius: 15px;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.method-info-card h3 {
+  color: #3b82f6;
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+}
+
+.method-info-card ul {
+  list-style: none;
+  padding: 0;
+}
+
+.method-info-card li {
+  padding: 0.5rem 0;
+  color: #cbd5e1;
+  line-height: 1.6;
+}
+
+/* Selected City Info */
+.selected-city-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 8px;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #22c55e;
+}
+
+.info-icon {
+  font-size: 1.2rem;
+}
+
+.coords {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  font-family: 'Courier New', monospace;
+}
+
+/* Healthcare Overview Cards */
+.healthcare-overview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.healthcare-card {
+  background: rgba(30, 41, 59, 0.6);
+  padding: 2rem;
+  border-radius: 15px;
+  text-align: center;
+  border: 2px solid;
+  transition: all 0.3s ease;
+}
+
+.healthcare-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.healthcare-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.healthcare-card h3 {
+  font-size: 1.1rem;
+  color: #cbd5e1;
+  margin-bottom: 1rem;
+}
+
+.healthcare-value {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.healthcare-label {
+  font-size: 0.9rem;
+  color: #94a3b8;
+}
+
+/* Drive-Time Section */
+.drive-time-section {
+  margin: 3rem 0;
+  padding: 2rem;
+  background: rgba(30, 41, 59, 0.6);
+  border-radius: 15px;
+}
+
+.drive-time-section h3 {
+  margin-bottom: 2rem;
+  color: #3b82f6;
+}
+
+.drive-time-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.drive-time-card {
+  background: rgba(15, 23, 42, 0.8);
+  padding: 2rem;
+  border-radius: 15px;
+  text-align: center;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  transition: all 0.3s ease;
+}
+
+.drive-time-card.highlight {
+  background: rgba(59, 130, 246, 0.1);
+  border: 2px solid rgba(59, 130, 246, 0.5);
+  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
+}
+
+.drive-time-card:hover {
+  transform: translateY(-5px);
+}
+
+.time-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+  padding: 0.5rem 1.5rem;
+  border-radius: 20px;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.access-percentage {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #3b82f6;
+  margin-bottom: 0.5rem;
+}
+
+.access-count {
+  font-size: 1.5rem;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.access-label {
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+/* Facility Types */
+.facility-types-section {
+  margin: 3rem 0;
+  padding: 2rem;
+  background: rgba(30, 41, 59, 0.6);
+  border-radius: 15px;
+}
+
+.facility-types-section h3 {
+  margin-bottom: 2rem;
+  color: #22c55e;
+}
+
+.facility-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+}
+
+.facility-card {
+  background: rgba(15, 23, 42, 0.8);
+  padding: 2rem;
+  border-radius: 15px;
+  text-align: center;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.facility-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.facility-card h4 {
+  color: #22c55e;
+  margin-bottom: 1rem;
+}
+
+.facility-count {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* Resource Metrics */
+.resource-metrics-section {
+  margin: 3rem 0;
+  padding: 2rem;
+  background: rgba(30, 41, 59, 0.6);
+  border-radius: 15px;
+}
+
+.resource-metrics-section h3 {
+  margin-bottom: 2rem;
+  color: #f59e0b;
+}
+
+.resource-grid {
+  display: grid;
+  gap: 2rem;
+}
+
+.resource-card {
+  background: rgba(15, 23, 42, 0.8);
+  padding: 2rem;
+  border-radius: 15px;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.resource-card h4 {
+  color: #f59e0b;
+  margin-bottom: 1.5rem;
+  font-size: 1.3rem;
+}
+
+.resource-comparison {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.current-value,
+.target-value {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.value-label {
+  font-size: 0.9rem;
+  color: #94a3b8;
+}
+
+.value-number {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.value-unit {
+  font-size: 0.85rem;
+  color: #cbd5e1;
+}
+
+.comparison-arrow {
+  font-size: 2rem;
+  color: #3b82f6;
+}
+
+.resource-gap {
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+
+.resource-gap p {
+  color: #cbd5e1;
+  margin: 0;
+}
+
+.resource-gap strong {
+  color: #f59e0b;
+  font-size: 1.2rem;
+}
+
+/* Underserved Areas */
+.underserved-section {
+  margin: 3rem 0;
+  padding: 2rem;
+  background: rgba(30, 41, 59, 0.6);
+  border-radius: 15px;
+}
+
+.underserved-section h3 {
+  margin-bottom: 2rem;
+  color: #ef4444;
+}
+
+.underserved-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.underserved-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: rgba(15, 23, 42, 0.8);
+  border-radius: 10px;
+  border-left: 4px solid #ef4444;
+}
+
+.area-icon {
+  font-size: 1.5rem;
+}
+
+.area-name {
+  flex: 1;
+  color: #fff;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.priority-badge {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.priority-badge.critical {
+  background: rgba(239, 68, 68, 0.3);
+  border-color: rgba(239, 68, 68, 0.6);
+  color: #fca5a5;
+}
+
+.priority-badge.high {
+  background: rgba(245, 158, 11, 0.3);
+  border-color: rgba(245, 158, 11, 0.6);
+  color: #fbbf24;
+}
+
+.priority-badge.medium {
+  background: rgba(59, 130, 246, 0.3);
+  border-color: rgba(59, 130, 246, 0.6);
+  color: #93c5fd;
+}
+
+/* Recommended Locations */
+.recommended-locations-section {
+  margin: 3rem 0;
+  padding: 2rem;
+  background: rgba(30, 41, 59, 0.6);
+  border-radius: 15px;
+}
+
+.recommended-locations-section h3 {
+  margin-bottom: 2rem;
+  color: #22c55e;
+}
+
+.locations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.location-card {
+  background: rgba(15, 23, 42, 0.8);
+  padding: 2rem;
+  border-radius: 15px;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  transition: all 0.3s ease;
+}
+
+.location-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(34, 197, 94, 0.5);
+  box-shadow: 0 10px 30px rgba(34, 197, 94, 0.2);
+}
+
+.location-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.location-number {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #22c55e;
+}
+
+.location-details p {
+  margin: 0.75rem 0;
+  color: #cbd5e1;
+  line-height: 1.6;
+}
+
+.location-details strong {
+  color: #fff;
+}
+
+/* Quality Metrics */
+.quality-metrics-section {
+  margin: 3rem 0;
+  padding: 2rem;
+  background: rgba(30, 41, 59, 0.6);
+  border-radius: 15px;
+}
+
+.quality-metrics-section h3 {
+  margin-bottom: 2rem;
+  color: #fbbf24;
+}
+
+.quality-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+}
+
+.quality-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.5rem;
+  background: rgba(15, 23, 42, 0.8);
+  border-radius: 10px;
+  border-left: 4px solid #fbbf24;
+}
+
+.quality-label {
+  font-size: 0.9rem;
+  color: #94a3b8;
+}
+
+.quality-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .healthcare-title {
+    font-size: 2.5rem;
+  }
+
+  .methodology-grid-info {
+    grid-template-columns: 1fr;
+  }
+
+  .healthcare-overview {
+    grid-template-columns: 1fr;
+  }
+
+  .drive-time-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .resource-comparison {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .comparison-arrow {
+    transform: rotate(90deg);
+  }
+
+  .locations-grid {
+    grid-template-columns: 1fr;
+  }
+}

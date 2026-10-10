@@ -1,0 +1,89 @@
+.section_title {
+    background: -webkit-linear-gradient(#e4d6fb, #8400ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 4rem;
+    font-weight: bold;
+}
+
+.apod_img_container {
+    width: 100%; /* Ensure it is always 100% of its container */
+    height: auto; /* Let the height adjust naturally */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.img {
+    width: 500px;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#apod_img {
+    aspect-ratio: 16/9; /* Use 16/9 to make it suitable for videos as well */
+    border-radius: 25px;
+    width: 100%; /* Ensure it fits within its parent container */
+    height: auto;
+    object-fit: cover;
+}
+
+#apod_img:hover {
+    color: white;
+    box-shadow: 0 5px 15px #9000ff;
+}
+
+@media (max-width: 768px) {
+    .section_title_mobile {
+        font-size: 2rem;
+    }
+
+    .apod_img_container {
+        width: 100%;
+        height: auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .img {
+        width: 100%; /* Ensure it fits within smaller screens */
+        height: auto;
+    }
+
+    #apod_img {
+        height: auto;
+        width: 100%; /* Ensure image/video scales well */
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .img {
+        height: auto;
+        margin-bottom: 30px;
+    }
+}
+
+/* Add styles for the Next button */
+.next_button {
+    background-color: #8400ff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.next_button:hover {
+    background-color: #a060ff;
+    box-shadow: 0 5px 15px #9000ff;
+}
+
+.apod_container {
+    display: flex;
+    align-items: center;
+}

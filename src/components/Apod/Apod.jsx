@@ -1,0 +1,94 @@
+import React, { useState, useEffect } from 'react';
+import img from '../../assets/64e4e4aabd98a600197c0ca3.webp';  // Fallback image
+import Styles from "./Apod.module.css";
+
+function Apod() {
+  const [apodInfo, setApodInfo] = useState({
+    url: "",
+    explanation: "",
+    title: "",
+    date: "",
+    copyright: "",
+    media_type: "",
+  });
+
+  const [currentDate, setCurrentDate] = useState(new Date().toISOString().slice(0, 10)); // Get current date
+
+  async function fetchAPOD(date = "") {
+    try {
+      const NASA_API_KEY = import.meta.env.VITE_NASA_API_KEY || 'DEMO_KEY';
+      let response = await fetch(`https://api.nasa.gov/planetary/apod?api_key=${NASA_API_KEY}&date=${date}`);
+      response = await response.json();
+
+      setApodInfo({
+        url: response.url,
+        explanation: response.explanation,
+        title: response.title,
+        date: response.date,
+        copyright: response.copyright,
+        media_type: response.media_type,
+      });
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  const handleNextImage = () => {
+    const nextDate = new Date(currentDate);
+    nextDate.setDate(nextDate.getDate() - 1);  // Go to the previous day
+    const formattedDate = nextDate.toISOString().slice(0, 10);
+    setCurrentDate(formattedDate);  // useEffect fetches the new date
+  };
+
+  useEffect(() => {
+    fetchAPOD(currentDate);
+  }, [currentDate]);
+
+  return (
+    <>
+      <h1 style={{ textAlign: "center" }} className={`${Styles['section_title']} ${Styles['section_title_mobile']}`} id="apod">
+        Astronomy Picture of The Day
+      </h1>
+
+      <div className="container my-5 overflow-x-hidden">
+        <div className={`row ${Styles['apod_container']} mx-1 p-4 pb-0 pe-lg-0 pt-lg-5 align-items-center rounded-3 border shadow-lg`} id="class_removal">
+          <div className="col-lg-7 p-3 p-lg-5 pt-lg-3">
+            <h2 id="title" className="display-7 fw-bold lh-1 text-light">
+              {apodInfo.title ? apodInfo.title : "APoD Title"}
+            </h2>
+            <br />
+            <p id="apod_info" className="lead">
+              {apodInfo.explanation ? apodInfo.explanation : "NASA's Astronomy Picture of the Day (APoD) showcases captivating celestial images accompanied by brief explanations."}
+            </p>
+
+            <button className={Styles["next_button"]} onClick={handleNextImage}>
+              Next Image
+            </button>
+          </div>
+
+          <div className="col-lg-5">
+            <div className={Styles["apod_img_container"]}>
+              {apodInfo.media_type === "video" ? (
+                <iframe
+                  src={apodInfo.url ? apodInfo.url.replace("rel=1", "rel=0") + "&mute=1&color=white" : ""}
+                  id={Styles["apod_img"]}
+                  className={Styles["apod_img"]}
+                  alt="APOD"
+                />
+              ) : (
+                <img
+                  src={apodInfo.url ? apodInfo.url : img}
+                  id={Styles["apod_img"]}
+                  className={Styles["apod_img"]}
+                  alt="APOD"
+                />
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+export default Apod;
